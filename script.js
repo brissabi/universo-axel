@@ -325,35 +325,86 @@ function constrainCamera() {
   camera.y = clamp(camera.y, -maxY, maxY);
 }
 
-function fadeAudioIn() {
-  if (!state.audioEnabled || state.audioStarted) return;
+let audioFadeTimer = null;
 
-  state.audioStarted = true;
-  music.volume = 0;
+function updateAudioButton(isPlaying) {
+  toggleAudio.setAttribute("aria-pressed", String(isPlaying));
+  toggleAudio.textContent = isPlaying ? "Sonido: activo" : "Activar sonido";
+}
 
-  const playPromise = music.play();
-  if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => {
-      state.audioStarted = false;
-      toggleAudio.textContent = "Sonido: disponible";
-      toggleAudio.setAttribute("aria-pressed", "false");
-    });
+function fadeAudioTo(targetVolume = 0.72) {
+  // iOS puede ignorar los cambios programáticos de volumen. En ese caso,
+  // la canción simplemente sonará con el volumen del teléfono.
+  window.clearInterval(audioFadeTimer);
+
+  let currentVolume = Number.isFinite(music.volume) ? music.volume : targetVolume;
+  if (currentVolume <= 0) currentVolume = 0.08;
+
+  try {
+    music.volume = currentVolume;
+  } catch (error) {
+    return;
   }
 
-  let volume = 0;
-  const timer = window.setInterval(() => {
-    if (!state.audioEnabled) {
-      window.clearInterval(timer);
+  audioFadeTimer = window.setInterval(() => {
+    if (!state.audioEnabled || music.paused) {
+      window.clearInterval(audioFadeTimer);
       return;
     }
 
-    volume = Math.min(0.72, volume + 0.025);
-    music.volume = volume;
+    currentVolume = Math.min(targetVolume, currentVolume + 0.035);
 
-    if (volume >= 0.72) {
-      window.clearInterval(timer);
+    try {
+      music.volume = currentVolume;
+    } catch (error) {
+      window.clearInterval(audioFadeTimer);
+      return;
     }
-  }, 90);
+
+    if (currentVolume >= targetVolume) {
+      window.clearInterval(audioFadeTimer);
+    }
+  }, 85);
+}
+
+function startMusicFromUserGesture() {
+  if (!state.audioEnabled) return;
+
+  // Debe llamarse directamente desde el clic/toque, antes de cualquier
+  // setTimeout, animación o await. Esto es esencial en Safari y Chrome móvil.
+  music.muted = false;
+  music.loop = true;
+  music.playsInline = true;
+
+  try {
+    music.volume = 0.08;
+  } catch (error) {
+    // iOS puede no permitir controlar el volumen desde JavaScript.
+  }
+
+  const playPromise = music.play();
+
+  if (playPromise && typeof playPromise.then === "function") {
+    playPromise
+      .then(() => {
+        state.audioStarted = true;
+        updateAudioButton(true);
+        fadeAudioTo(0.72);
+      })
+      .catch((error) => {
+        state.audioStarted = false;
+        updateAudioButton(false);
+        console.warn("El teléfono bloqueó la reproducción automática.", error);
+      });
+  } else {
+    state.audioStarted = true;
+    updateAudioButton(true);
+    fadeAudioTo(0.72);
+  }
+}
+
+function fadeAudioIn() {
+  startMusicFromUserGesture();
 }
 
 function changeIntroLine(text) {
@@ -378,9 +429,12 @@ function showNarrative(text, duration = 2600) {
 
 async function beginExperience() {
   if (state.started) return;
-  state.started = true;
 
-  fadeAudioIn();
+  // Primera instrucción después del toque: iniciar el audio.
+  // No colocar esperas ni animaciones antes de esta llamada.
+  startMusicFromUserGesture();
+
+  state.started = true;
   originStar.disabled = true;
   changeIntroLine("La nuestra comenzó con una conversación.");
 
@@ -763,23 +817,20 @@ function resetCamera() {
   centerOnWorldPoint(1800, 1300, DEFAULT_SCALE, true);
 }
 
-function toggleMusic() {
-  state.audioEnabled = !state.audioEnabled;
-  toggleAudio.setAttribute("aria-pressed", String(state.audioEnabled));
+function toggleMusic(event) {
+  if (event) event.stopPropagation();
 
-  if (state.audioEnabled) {
-    toggleAudio.textContent = "Sonido: activo";
-
-    if (!state.audioStarted) {
-      fadeAudioIn();
-    } else {
-      music.play().catch(() => {});
-      music.volume = 0.72;
-    }
-  } else {
-    toggleAudio.textContent = "Sonido: pausado";
-    music.pause();
+  if (!state.audioEnabled || music.paused) {
+    state.audioEnabled = true;
+    startMusicFromUserGesture();
+    return;
   }
+
+  state.audioEnabled = false;
+  window.clearInterval(audioFadeTimer);
+  music.pause();
+  toggleAudio.setAttribute("aria-pressed", "false");
+  toggleAudio.textContent = "Sonido: pausado";
 }
 
 function positionCelestialObjects() {
