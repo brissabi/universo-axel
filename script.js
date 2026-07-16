@@ -60,6 +60,9 @@ const STORAGE_KEY = "universoAxelProgressV1";
 const MUSIC_KEY = "projectPolarisLastTrack";
 const QUALITY_KEY = "projectPolarisQuality";
 const STAR_LAYOUT_SEED = 21042026;
+const WHEEL_ZOOM_SENSITIVITY = 0.00125;
+const KEYBOARD_PAN_STEP = 92;
+const KEYBOARD_ZOOM_FACTOR = 1.12;
 
 const tracks = [
   { title: "Say Yes To Heaven", artist: "Lana Del Rey", file: "say_yes_to_heaven.mp3", theme: "heaven", volume: 0.14 },
@@ -958,6 +961,7 @@ function startInertia() {
 
 function pointerDown(event) {
   if (event.button !== undefined && event.button !== 0) return;
+  event.preventDefault();
   if (event.target.closest("button,.menu-panel,.planet-sheet,.letter,.epilogue-card")) return;
   stopInertia();
   state.dragging = true;
@@ -999,19 +1003,54 @@ function pointerUp(event) {
   window.setTimeout(() => { state.movedDuringPointer = false; }, 80);
 }
 
+function zoomAtPoint(nextScale, clientX = window.innerWidth / 2, clientY = window.innerHeight / 2) {
+  const rect = viewport.getBoundingClientRect();
+  const pointerX = clientX - rect.left - rect.width / 2;
+  const pointerY = clientY - rect.top - rect.height / 2;
+  const oldScale = camera.scale;
+  const clampedScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+  const ratio = clampedScale / oldScale;
+  camera.x = pointerX - (pointerX - camera.x) * ratio;
+  camera.y = pointerY - (pointerY - camera.y) * ratio;
+  camera.scale = clampedScale;
+  applyCamera(false);
+}
+
 function wheelZoom(event) {
   event.preventDefault();
   stopInertia();
-  const rect = viewport.getBoundingClientRect();
-  const pointerX = event.clientX - rect.width / 2;
-  const pointerY = event.clientY - rect.height / 2;
-  const oldScale = camera.scale;
-  const nextScale = clamp(oldScale * (event.deltaY < 0 ? 1.1 : 0.9), MIN_SCALE, MAX_SCALE);
-  const ratio = nextScale / oldScale;
-  camera.x = pointerX - (pointerX - camera.x) * ratio;
-  camera.y = pointerY - (pointerY - camera.y) * ratio;
-  camera.scale = nextScale;
-  applyCamera(false);
+  // Exponential zoom keeps both mouse wheels and precision touchpads smooth.
+  const factor = Math.exp(-event.deltaY * WHEEL_ZOOM_SENSITIVITY);
+  zoomAtPoint(camera.scale * clamp(factor, 0.78, 1.28), event.clientX, event.clientY);
+}
+
+function keyboardCameraControl(event) {
+  if (!state.started || document.body.classList.contains("moment-open")) return;
+  if (event.target.closest("input, textarea, button, .menu-panel, .letter, .planet-sheet")) return;
+
+  const step = KEYBOARD_PAN_STEP * (event.shiftKey ? 1.8 : 1);
+  let handled = true;
+  switch (event.key.toLowerCase()) {
+    case "arrowleft":
+    case "a": camera.x += step; break;
+    case "arrowright":
+    case "d": camera.x -= step; break;
+    case "arrowup":
+    case "w": camera.y += step; break;
+    case "arrowdown":
+    case "s": camera.y -= step; break;
+    case "+":
+    case "=": zoomAtPoint(camera.scale * KEYBOARD_ZOOM_FACTOR); return event.preventDefault();
+    case "-":
+    case "_": zoomAtPoint(camera.scale / KEYBOARD_ZOOM_FACTOR); return event.preventDefault();
+    case "0": resetCamera(); return event.preventDefault();
+    default: handled = false;
+  }
+  if (handled) {
+    event.preventDefault();
+    stopInertia();
+    applyCamera(false);
+  }
 }
 
 function touchDistance(touches) {
@@ -1084,6 +1123,7 @@ viewport.addEventListener("touchend", touchEnd, { passive: true });
 
 // Evita el arrastre nativo del navegador (icono rojo de prohibido) sobre planetas, textos e imágenes.
 document.addEventListener("dragstart", event => event.preventDefault());
+document.addEventListener("keydown", keyboardCameraControl);
 
 document.addEventListener("click", event => {
   if (menuPanel.classList.contains("is-open") && !event.target.closest(".menu-panel,.menu-toggle")) closeMenu();
@@ -1105,6 +1145,15 @@ document.querySelectorAll(".celestial:not(#secretObject)").forEach(object => {
     event.stopPropagation();
     if (state.movedDuringPointer) return;
     discoverCelestial(object);
+  });
+  object.addEventListener("dblclick", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const x = Number(object.dataset.x);
+    const y = Number(object.dataset.y);
+    centerOnWorldPoint(x, y, window.innerWidth < 700 ? 0.82 : 1.08, true);
+    object.classList.add("camera-focus");
+    window.setTimeout(() => object.classList.remove("camera-focus"), 900);
   });
 });
 
