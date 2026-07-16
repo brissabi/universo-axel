@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#050713" />
+  <meta name="theme-color" content="#08143b" />
   <meta name="description" content="Project Polaris — un universo creado por Abby para Axel." />
   <title>For Axel — Project Polaris</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,6 +31,8 @@
       <div class="nebula nebula-a"></div>
       <div class="nebula nebula-b"></div>
       <div class="nebula nebula-c"></div>
+      <div class="nebula nebula-d"></div>
+      <div class="nebula nebula-e"></div>
       <div id="ambientSpace" class="ambient-space" aria-hidden="true">
         <div id="cosmicDust" class="cosmic-dust"></div>
         <div id="shootingStars" class="shooting-stars"></div>
@@ -244,11 +246,25 @@
           <span id="menuTrackArtist">La música comienza al entrar</span>
         </div>
 
+        <section class="quality-control" aria-labelledby="qualityTitle">
+          <div class="quality-heading">
+            <p id="qualityTitle">Calidad visual</p>
+            <span id="qualityStatus">Automática</span>
+          </div>
+          <div class="quality-options" role="group" aria-label="Calidad visual">
+            <button type="button" data-quality="auto" aria-pressed="true">Automática</button>
+            <button type="button" data-quality="high" aria-pressed="false">Alta</button>
+            <button type="button" data-quality="balanced" aria-pressed="false">Equilibrada</button>
+            <button type="button" data-quality="saver" aria-pressed="false">Ahorro</button>
+          </div>
+        </section>
+
         <nav class="menu-actions" aria-label="Acciones">
           <button id="toggleAudio" type="button">Pausar sonido</button>
           <button id="nextTrack" type="button">Siguiente frecuencia</button>
           <button id="resetView" type="button">Recentrar universo</button>
           <button id="findLight" type="button">Encontrar una luz</button>
+          <button id="openMoonMessage" type="button" hidden>Leer el mensaje de la luna</button>
           <button id="openLetterAgain" type="button" hidden>Volver a leer la carta</button>
           <button id="openEpilogue" type="button" hidden>Leer el epílogo</button>
           <button id="resetProgress" class="danger-action" type="button">Reiniciar recorrido</button>
