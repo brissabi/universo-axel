@@ -30,6 +30,9 @@ const finalMenuToggle = document.getElementById("finalMenuToggle");
 const finalMenuPopover = document.getElementById("finalMenuPopover");
 const resetProgress = document.getElementById("resetProgress");
 const music = document.getElementById("bgMusic");
+const cosmicDust = document.getElementById("cosmicDust");
+const shootingStarsLayer = document.getElementById("shootingStars");
+const driftingBodies = document.getElementById("driftingBodies");
 
 const WORLD_WIDTH = 3600;
 const WORLD_HEIGHT = 2600;
@@ -60,6 +63,9 @@ const state = {
   secretUnlocked: false,
   epilogueUnlocked: false,
   epilogueShown: false,
+  pendingPlanetCompletion: false,
+  pendingEpilogue: false,
+  narrativeRunning: false,
   pinchDistance: null,
   pinchScale: DEFAULT_SCALE,
 };
@@ -146,6 +152,84 @@ const starMessages = [
   "No podría haber imaginado a alguien como tú y, aun así, aquí estás.",
   "En medio de tanto ruido, tú sigues siendo la presencia que más paz me da."
 ];
+
+
+function createAmbientSpace() {
+  if (!cosmicDust || !shootingStarsLayer || !driftingBodies) return;
+
+  const random = createSeededRandom(88731);
+  const moteCount = window.innerWidth < 760 ? 28 : 46;
+  const bodyCount = window.innerWidth < 760 ? 4 : 7;
+
+  cosmicDust.replaceChildren();
+  driftingBodies.replaceChildren();
+
+  for (let index = 0; index < moteCount; index += 1) {
+    const mote = document.createElement("span");
+    mote.className = "cosmic-mote";
+    mote.style.left = `${random() * 100}%`;
+    mote.style.top = `${random() * 100}%`;
+    mote.style.setProperty("--mote-size", `${(random() * 2.2 + 0.8).toFixed(2)}px`);
+    mote.style.setProperty("--mote-opacity", (random() * 0.28 + 0.12).toFixed(2));
+    mote.style.setProperty("--mote-duration", `${(random() * 18 + 18).toFixed(1)}s`);
+    mote.style.setProperty("--mote-delay", `${(-random() * 22).toFixed(1)}s`);
+    mote.style.setProperty("--mote-x", `${(random() * 80 - 40).toFixed(0)}px`);
+    mote.style.setProperty("--mote-y", `${(random() * -75 - 18).toFixed(0)}px`);
+    cosmicDust.appendChild(mote);
+  }
+
+  for (let index = 0; index < bodyCount; index += 1) {
+    const body = document.createElement("span");
+    body.className = "drifting-body";
+    body.style.top = `${8 + random() * 78}%`;
+    body.style.left = `${-20 - random() * 35}%`;
+    body.style.setProperty("--body-size", `${(random() * 7 + 3).toFixed(1)}px`);
+    body.style.setProperty("--body-opacity", (random() * 0.18 + 0.1).toFixed(2));
+    body.style.setProperty("--body-blur", `${(random() * 0.8).toFixed(2)}px`);
+    body.style.setProperty("--body-duration", `${(random() * 30 + 34).toFixed(1)}s`);
+    body.style.setProperty("--body-delay", `${(-random() * 48).toFixed(1)}s`);
+    body.style.setProperty("--body-wave", `${(random() * 90 - 45).toFixed(0)}px`);
+    driftingBodies.appendChild(body);
+  }
+}
+
+let shootingStarTimer = null;
+
+function scheduleShootingStar(initialDelay = false) {
+  window.clearTimeout(shootingStarTimer);
+  const delay = initialDelay ? 5200 : 6500 + Math.random() * 12500;
+  shootingStarTimer = window.setTimeout(() => {
+    if (state.started && !document.hidden && !letterScene.classList.contains("is-open") && !epilogueScene.classList.contains("is-open")) {
+      launchShootingStar();
+    }
+    scheduleShootingStar(false);
+  }, delay);
+}
+
+function launchShootingStar() {
+  if (!shootingStarsLayer) return;
+  const star = document.createElement("span");
+  star.className = "shooting-star";
+  const startX = 72 + Math.random() * 30;
+  const startY = 5 + Math.random() * 38;
+  const travelX = -(420 + Math.random() * 420);
+  const travelY = 220 + Math.random() * 320;
+  const angle = -22 - Math.random() * 18;
+  star.style.left = `${startX}%`;
+  star.style.top = `${startY}%`;
+  star.style.setProperty("--shoot-angle", `${angle.toFixed(1)}deg`);
+  star.style.setProperty("--shoot-x", `${travelX.toFixed(0)}px`);
+  star.style.setProperty("--shoot-y", `${travelY.toFixed(0)}px`);
+  star.style.setProperty("--shoot-duration", `${(1.05 + Math.random() * 0.65).toFixed(2)}s`);
+  star.style.setProperty("--shoot-length", `${(110 + Math.random() * 90).toFixed(0)}px`);
+  shootingStarsLayer.appendChild(star);
+  requestAnimationFrame(() => star.classList.add("is-flying"));
+  star.addEventListener("animationend", () => star.remove(), { once: true });
+}
+
+function handleAmbientVisibility() {
+  if (!document.hidden && state.started) scheduleShootingStar(true);
+}
 
 function createSeededRandom(seed) {
   let value = seed >>> 0;
@@ -240,9 +324,6 @@ function applySavedProgress() {
     openEpilogueButton.hidden = false;
   }
 
-  if (state.visitedPlanets.size || state.visitedStars.size) {
-    introLine.textContent = "Este universo te estaba esperando.";
-  }
 }
 
 function resetSavedProgress() {
@@ -325,86 +406,35 @@ function constrainCamera() {
   camera.y = clamp(camera.y, -maxY, maxY);
 }
 
-let audioFadeTimer = null;
+function fadeAudioIn() {
+  if (!state.audioEnabled || state.audioStarted) return;
 
-function updateAudioButton(isPlaying) {
-  toggleAudio.setAttribute("aria-pressed", String(isPlaying));
-  toggleAudio.textContent = isPlaying ? "Sonido: activo" : "Activar sonido";
-}
-
-function fadeAudioTo(targetVolume = 0.72) {
-  // iOS puede ignorar los cambios programáticos de volumen. En ese caso,
-  // la canción simplemente sonará con el volumen del teléfono.
-  window.clearInterval(audioFadeTimer);
-
-  let currentVolume = Number.isFinite(music.volume) ? music.volume : targetVolume;
-  if (currentVolume <= 0) currentVolume = 0.08;
-
-  try {
-    music.volume = currentVolume;
-  } catch (error) {
-    return;
-  }
-
-  audioFadeTimer = window.setInterval(() => {
-    if (!state.audioEnabled || music.paused) {
-      window.clearInterval(audioFadeTimer);
-      return;
-    }
-
-    currentVolume = Math.min(targetVolume, currentVolume + 0.035);
-
-    try {
-      music.volume = currentVolume;
-    } catch (error) {
-      window.clearInterval(audioFadeTimer);
-      return;
-    }
-
-    if (currentVolume >= targetVolume) {
-      window.clearInterval(audioFadeTimer);
-    }
-  }, 85);
-}
-
-function startMusicFromUserGesture() {
-  if (!state.audioEnabled) return;
-
-  // Debe llamarse directamente desde el clic/toque, antes de cualquier
-  // setTimeout, animación o await. Esto es esencial en Safari y Chrome móvil.
-  music.muted = false;
-  music.loop = true;
-  music.playsInline = true;
-
-  try {
-    music.volume = 0.08;
-  } catch (error) {
-    // iOS puede no permitir controlar el volumen desde JavaScript.
-  }
+  state.audioStarted = true;
+  music.volume = 0;
 
   const playPromise = music.play();
-
-  if (playPromise && typeof playPromise.then === "function") {
-    playPromise
-      .then(() => {
-        state.audioStarted = true;
-        updateAudioButton(true);
-        fadeAudioTo(0.72);
-      })
-      .catch((error) => {
-        state.audioStarted = false;
-        updateAudioButton(false);
-        console.warn("El teléfono bloqueó la reproducción automática.", error);
-      });
-  } else {
-    state.audioStarted = true;
-    updateAudioButton(true);
-    fadeAudioTo(0.72);
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      state.audioStarted = false;
+      toggleAudio.textContent = "Sonido: disponible";
+      toggleAudio.setAttribute("aria-pressed", "false");
+    });
   }
-}
 
-function fadeAudioIn() {
-  startMusicFromUserGesture();
+  let volume = 0;
+  const timer = window.setInterval(() => {
+    if (!state.audioEnabled) {
+      window.clearInterval(timer);
+      return;
+    }
+
+    volume = Math.min(0.72, volume + 0.025);
+    music.volume = volume;
+
+    if (volume >= 0.72) {
+      window.clearInterval(timer);
+    }
+  }, 90);
 }
 
 function changeIntroLine(text) {
@@ -417,24 +447,28 @@ function changeIntroLine(text) {
 
 function showNarrative(text, duration = 2600) {
   return new Promise((resolve) => {
+    state.narrativeRunning = true;
+    document.body.classList.add("narrative-active");
     narrativeText.textContent = text;
     narrativeText.classList.add("is-visible");
 
     window.setTimeout(() => {
       narrativeText.classList.remove("is-visible");
-      window.setTimeout(resolve, 1150);
+      window.setTimeout(() => {
+        state.narrativeRunning = false;
+        document.body.classList.remove("narrative-active");
+        resolve();
+      }, 900);
     }, duration);
   });
 }
 
 async function beginExperience() {
   if (state.started) return;
-
-  // Primera instrucción después del toque: iniciar el audio.
-  // No colocar esperas ni animaciones antes de esta llamada.
-  startMusicFromUserGesture();
-
   state.started = true;
+  scheduleShootingStar(true);
+
+  fadeAudioIn();
   originStar.disabled = true;
   changeIntroLine("La nuestra comenzó con una conversación.");
 
@@ -447,9 +481,10 @@ async function beginExperience() {
     viewport.classList.add("is-ready");
     centerOnWorldPoint(1800, 1300, DEFAULT_SCALE, true);
 
-    await showNarrative("Dicen que el universo comenzó en la oscuridad.", 2300);
-    await showNarrative("El mío comenzó cuando llegaste a mi vida.", 2900);
+    await showNarrative("La nuestra comenzó con una conversación.", 2400);
+    await showNarrative("Y, sin darme cuenta, terminaste cambiando la forma en que se siente mi mundo.", 3000);
     await showNarrative("Los planetas guardan capítulos. Las luces pequeñas guardan pensamientos.", 3400);
+    document.body.classList.add("exploration-ready");
     navigationHint.classList.add("is-emphasized");
     window.setTimeout(() => navigationHint.classList.remove("is-emphasized"), 6500);
   }, 2600);
@@ -542,6 +577,17 @@ function openPanel(title, message, eyebrow = "Descubrimiento") {
 function closeDiscoveryPanel() {
   discoveryPanel.classList.remove("is-open");
   discoveryPanel.setAttribute("aria-hidden", "true");
+
+  if (state.pendingPlanetCompletion) {
+    state.pendingPlanetCompletion = false;
+    window.setTimeout(unlockSecretObject, 650);
+    return;
+  }
+
+  if (state.pendingEpilogue) {
+    state.pendingEpilogue = false;
+    window.setTimeout(openEpilogue, 650);
+  }
 }
 
 function discoverStar(star) {
@@ -555,8 +601,8 @@ function discoverStar(star) {
 
     if (state.visitedStars.size === 80) {
       state.epilogueUnlocked = true;
+      state.pendingEpilogue = true;
       openEpilogueButton.hidden = false;
-      window.setTimeout(openEpilogue, 650);
     }
 
     saveProgress();
@@ -585,7 +631,7 @@ function discoverCelestial(object) {
     saveProgress();
 
     if (state.visitedPlanets.size === 8) {
-      unlockSecretObject();
+      state.pendingPlanetCompletion = true;
     }
   }
 
@@ -603,7 +649,6 @@ async function unlockSecretObject() {
   state.secretUnlocked = true;
   saveProgress();
 
-  closeDiscoveryPanel();
   await showNarrative("Has encontrado todos los rincones visibles de este universo.", 2700);
   await showNarrative("Pero todavía queda una luz que no podía aparecer antes.", 2800);
 
@@ -817,20 +862,23 @@ function resetCamera() {
   centerOnWorldPoint(1800, 1300, DEFAULT_SCALE, true);
 }
 
-function toggleMusic(event) {
-  if (event) event.stopPropagation();
+function toggleMusic() {
+  state.audioEnabled = !state.audioEnabled;
+  toggleAudio.setAttribute("aria-pressed", String(state.audioEnabled));
 
-  if (!state.audioEnabled || music.paused) {
-    state.audioEnabled = true;
-    startMusicFromUserGesture();
-    return;
+  if (state.audioEnabled) {
+    toggleAudio.textContent = "Sonido: activo";
+
+    if (!state.audioStarted) {
+      fadeAudioIn();
+    } else {
+      music.play().catch(() => {});
+      music.volume = 0.72;
+    }
+  } else {
+    toggleAudio.textContent = "Sonido: pausado";
+    music.pause();
   }
-
-  state.audioEnabled = false;
-  window.clearInterval(audioFadeTimer);
-  music.pause();
-  toggleAudio.setAttribute("aria-pressed", "false");
-  toggleAudio.textContent = "Sonido: pausado";
 }
 
 function positionCelestialObjects() {
@@ -930,5 +978,7 @@ document.querySelectorAll(".celestial:not(#secretObject)").forEach((object) => {
 
 positionCelestialObjects();
 createStars();
+createAmbientSpace();
 applySavedProgress();
+document.addEventListener("visibilitychange", handleAmbientVisibility);
 setWorldTransform(false);

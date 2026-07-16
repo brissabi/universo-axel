@@ -11,7 +11,7 @@
 <body>
   <audio id="bgMusic" loop preload="metadata">
     <source src="say_yes_to_heaven.mp3" type="audio/mpeg" />
-    <source src="say_yes_to_heaven.mp3.mp3" type="audio/wav" />
+    <source src="say_yes_to_heaven.wav" type="audio/wav" />
   </audio>
 
   <main id="experience" aria-label="Universo interactivo para Axel">
@@ -32,6 +32,12 @@
       <div class="nebula nebula-a" aria-hidden="true"></div>
       <div class="nebula nebula-b" aria-hidden="true"></div>
       <div class="nebula nebula-c" aria-hidden="true"></div>
+
+      <div id="ambientSpace" class="ambient-space" aria-hidden="true">
+        <div id="cosmicDust" class="cosmic-dust"></div>
+        <div id="shootingStars" class="shooting-stars"></div>
+        <div id="driftingBodies" class="drifting-bodies"></div>
+      </div>
 
       <div id="world" class="world" aria-label="Mapa del universo">
         <div id="deepStars" class="star-layer star-layer-deep" aria-hidden="true"></div>

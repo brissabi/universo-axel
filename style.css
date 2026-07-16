@@ -650,11 +650,17 @@ button:focus-visible {
 
 .narrative p {
   width: min(760px, 92vw);
-  color: rgba(247, 244, 236, 0.9);
+  padding: clamp(18px, 3vw, 28px) clamp(20px, 4vw, 40px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(3, 7, 16, 0.82), rgba(8, 13, 25, 0.68));
+  backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  color: rgba(247, 244, 236, 0.94);
   font-size: clamp(1.35rem, 3.3vw, 2.45rem);
   line-height: 1.45;
   text-align: center;
-  text-shadow: 0 8px 34px rgba(0, 0, 0, 0.65);
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.95);
   opacity: 0;
   transform: translateY(14px);
   filter: blur(8px);
@@ -912,7 +918,7 @@ button:focus-visible {
   transition: opacity 1s ease, transform 1s ease;
 }
 
-.viewport.is-ready .controls {
+body.exploration-ready .viewport.is-ready .controls {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -1035,7 +1041,7 @@ button:focus-visible {
 .navigation-hint strong { margin-bottom: 3px; color: rgba(247,244,236,.84); font-weight: 500; }
 .navigation-hint.is-emphasized { border-color: rgba(214,189,131,.28); background: rgba(12,19,34,.76); }
 
-.viewport.is-ready .navigation-hint {
+body.exploration-ready .viewport.is-ready .navigation-hint {
   opacity: 1;
   animation: hintFade 8s ease forwards 5s;
 }
@@ -1045,9 +1051,28 @@ button:focus-visible {
   100% { opacity: 0; }
 }
 
+
+body.narrative-active .controls,
+body.narrative-active .navigation-hint {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Responsive */
 
 @media (max-width: 760px) {
+  .narrative {
+    align-items: start;
+    padding-top: max(22vh, 150px);
+    padding-bottom: 180px;
+  }
+
+  .narrative p {
+    width: min(92vw, 560px);
+    font-size: clamp(1.35rem, 7vw, 2rem);
+    line-height: 1.35;
+  }
+
   .discovery-panel {
     left: 14px;
     right: 14px;
@@ -1065,8 +1090,10 @@ button:focus-visible {
   }
 
   .controls {
+    left: 14px;
     right: 14px;
-    bottom: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    justify-content: center;
     flex-wrap: wrap;
   }
 
@@ -1082,7 +1109,9 @@ button:focus-visible {
   }
 
   .navigation-hint {
-    bottom: 76px;
+    bottom: 148px;
+    color: rgba(233, 238, 247, 0.72);
+    background: rgba(5, 10, 20, 0.78);
   }
 
   .letter-scene {
@@ -1220,3 +1249,6 @@ button:focus-visible {
   position: static;
   margin: 2rem auto 0;
 }
+
+/* Espacio vivo: movimiento ambiental elegante */
+.ambient-space{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none;opacity:0;transition:opacity 2.2s ease}.exploration-ready .ambient-space{opacity:1}.cosmic-dust,.shooting-stars,.drifting-bodies{position:absolute;inset:0;overflow:hidden;pointer-events:none}.cosmic-mote{position:absolute;width:var(--mote-size,2px);height:var(--mote-size,2px);border-radius:50%;background:rgba(230,238,255,var(--mote-opacity,.3));box-shadow:0 0 calc(var(--mote-size,2px)*5) rgba(154,185,235,.18);animation:cosmicMoteDrift var(--mote-duration,24s) ease-in-out infinite alternate;animation-delay:var(--mote-delay,0s);will-change:transform,opacity}@keyframes cosmicMoteDrift{0%{transform:translate3d(0,0,0) scale(.85);opacity:.15}45%{opacity:var(--mote-opacity,.35)}100%{transform:translate3d(var(--mote-x,28px),var(--mote-y,-42px),0) scale(1.15);opacity:.08}}.shooting-star{position:absolute;width:var(--shoot-length,150px);height:1px;transform:rotate(var(--shoot-angle,-28deg));transform-origin:right center;opacity:0;will-change:transform,opacity}.shooting-star:before{content:"";position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(188,213,255,.13) 48%,rgba(247,249,255,.98));filter:drop-shadow(0 0 5px rgba(190,216,255,.8))}.shooting-star:after{content:"";position:absolute;right:-2px;top:50%;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(196,220,255,.85);transform:translateY(-50%)}.shooting-star.is-flying{animation:shootingStarFlight var(--shoot-duration,1.35s) cubic-bezier(.16,.68,.26,1) forwards}@keyframes shootingStarFlight{0%{opacity:0;transform:translate3d(0,0,0) rotate(var(--shoot-angle,-28deg)) scaleX(.45)}12%{opacity:.95}72%{opacity:.76}100%{opacity:0;transform:translate3d(var(--shoot-x,-620px),var(--shoot-y,360px),0) rotate(var(--shoot-angle,-28deg)) scaleX(1.05)}}.drifting-body{position:absolute;width:var(--body-size,7px);height:var(--body-size,7px);border-radius:50%;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.76),rgba(154,181,222,.28) 42%,rgba(45,62,94,.1) 72%,transparent 74%);box-shadow:0 0 14px rgba(126,161,218,.16);opacity:var(--body-opacity,.28);filter:blur(var(--body-blur,0));animation:driftingBody var(--body-duration,34s) linear infinite;animation-delay:var(--body-delay,0s);will-change:transform}@keyframes driftingBody{from{transform:translate3d(-12vw,var(--body-wave,0),0) rotate(0)}50%{transform:translate3d(52vw,calc(var(--body-wave,0px) - 38px),0) rotate(180deg)}to{transform:translate3d(114vw,var(--body-wave,0),0) rotate(360deg)}}.nebula-a{animation:nebulaBreatheA 26s ease-in-out infinite alternate}.nebula-b{animation:nebulaBreatheB 32s ease-in-out infinite alternate}.nebula-c{animation:nebulaBreatheC 38s ease-in-out infinite alternate}@keyframes nebulaBreatheA{from{transform:translate3d(-1.5%,-1%,0) scale(1);opacity:.72}to{transform:translate3d(2%,1.5%,0) scale(1.08);opacity:.9}}@keyframes nebulaBreatheB{from{transform:translate3d(1%,0,0) scale(1.02);opacity:.62}to{transform:translate3d(-2%,2%,0) scale(1.1);opacity:.78}}@keyframes nebulaBreatheC{from{transform:translate3d(0,1%,0) scale(1);opacity:.5}to{transform:translate3d(1.5%,-1.5%,0) scale(1.09);opacity:.68}}@media(max-width:760px){.cosmic-mote:nth-child(n+29),.drifting-body:nth-child(n+5){display:none}.shooting-star{--shoot-length:105px}}@media(prefers-reduced-motion:reduce){.cosmic-mote,.shooting-star,.drifting-body,.nebula-a,.nebula-b,.nebula-c{animation:none!important}}
