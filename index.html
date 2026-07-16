@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <meta name="description" content="Un universo interactivo creado por Abby para Axel." />
+  <title>Axel — Un universo para ti</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <audio id="bgMusic" loop preload="metadata">
+    <source src="say_yes_to_heaven.mp3" type="audio/mpeg" />
+    <source src="say_yes_to_heaven.mp3.wav" type="audio/wav" />
+  </audio>
+
+  <main id="experience" aria-label="Universo interactivo para Axel">
+    <section id="intro" class="intro" aria-label="Inicio de la experiencia">
+      <div class="intro-copy" aria-live="polite">
+        <p id="introLine" class="intro-line">Cada universo comienza con una sola luz.</p>
+      </div>
+
+      <button id="originStar" class="origin-star" type="button" aria-label="Comenzar la experiencia">
+        <span class="origin-star-core"></span>
+        <span class="origin-star-halo"></span>
+      </button>
+
+      <p class="intro-instruction">Toca la luz</p>
+    </section>
+
+    <section id="viewport" class="viewport is-locked" aria-label="Espacio explorable">
+      <div class="nebula nebula-a" aria-hidden="true"></div>
+      <div class="nebula nebula-b" aria-hidden="true"></div>
+      <div class="nebula nebula-c" aria-hidden="true"></div>
+
+      <div id="world" class="world" aria-label="Mapa del universo">
+        <div id="deepStars" class="star-layer star-layer-deep" aria-hidden="true"></div>
+        <div id="interactiveStars" class="star-layer star-layer-interactive"></div>
+
+        <button
+          class="celestial sun discovered"
+          type="button"
+          data-kind="sun"
+          data-title="El centro"
+          data-message="Hay personas que iluminan haciendo ruido. Tú lo haces simplemente estando. Desde que llegaste a mi vida, todo encontró una forma distinta de tener sentido."
+          data-x="1800"
+          data-y="1300"
+          aria-label="Descubrir el Sol"
+        >
+          <span class="planet-surface"></span>
+          <span class="planet-label">Sol</span>
+        </button>
+
+        <button
+          class="celestial planet mercury dormant"
+          type="button"
+          data-planet="mercury"
+          data-title="Mercurio — El idioma que encontramos"
+          data-message="A mí siempre me ha costado encontrar las palabras. Contigo no tengo que perseguirlas ni ordenarlas demasiado: nuestras conversaciones fluyen como si hubiéramos estado hablando desde antes de conocernos."
+          data-x="1470"
+          data-y="1110"
+          aria-label="Descubrir Mercurio"
+        >
+          <span class="planet-surface"></span>
+          <span class="planet-label">Mercurio</span>
+        </button>
+
+        <button
+          class="celestial planet venus dormant"
+          type="button"
+          data-planet="venus"
+          data-title="Venus — Tu voz"
+          data-message="Basta una palabra tuya, apenas un segundo de tu voz, para que mi corazón cambie de ritmo. Haces aparecer en mí una sonrisa que casi siempre me cuesta encontrar, y consigues que parezca sencillo."
+          data-x="2140"
+          data-y="1030"
+          aria-label="Descubrir Venus"
+        >
+          <span class="planet-surface"></span>
+          <span class="planet-label">Venus</span>
+        </button>
+
+        <button
+          class="celestial planet earth dormant"
+          type="button"
+          data-planet="earth"
+          data-title="Tierra — Mi lugar seguro"
+          data-message="Durante mucho tiempo pensé que el hogar tenía que ser un lugar. Contigo entendí que también puede ser una persona: alguien ante quien puedo bajar la guardia, respirar y sentir que no tengo que fingir nada."
+          data-x="1260"
+          data-y="1540"
+          aria-label="Descubrir la Tierra"
+        >
+          <span class="planet-surface"></span>
+          <span class="earth-cloud earth-cloud-a"></span>
+          <span class="earth-cloud earth-cloud-b"></span>
+          <span class="planet-label">Tierra</span>
+        </button>
+
+        <button
+          class="celestial planet mars dormant"
+          type="button"
+          data-planet="mars"
+          data-title="Marte — La fuerza que admiro"
+          data-message="Admiro la forma en que sigues adelante incluso cuando llevas más peso del que dices. No porque nunca te duela, sino porque, aun con tus problemas, encuentras una manera de mantenerte en pie. Tu fuerza no borra tu vulnerabilidad; la vuelve todavía más valiosa."
+          data-x="2400"
+          data-y="1570"
+          aria-label="Descubrir Marte"
+        >
+          <span class="planet-surface"></span>
+          <span class="planet-label">Marte</span>
+        </button>
+
+        <button
+          class="celestial planet jupiter dormant"
+          type="button"
+          data-planet="jupiter"
+          data-title="Júpiter — La magnitud de encontrarte"
+          data-message="Llegaste sin prometer nada extraordinario y terminaste convirtiéndote en todo lo que siempre quise. Lo mejor que me ha pasado no fue encontrar una vida perfecta, sino encontrar a alguien con quien incluso lo difícil se siente menos inmenso."
+          data-x="920"
+          data-y="720"
+          aria-label="Descubrir Júpiter"
+        >
+          <span class="planet-surface"></span>
+          <span class="jupiter-band band-a"></span>
+          <span class="jupiter-band band-b"></span>
+          <span class="jupiter-spot"></span>
+          <span class="planet-label">Júpiter</span>
+        </button>
+
+        <button
+          class="celestial planet saturn dormant"
+          type="button"
+          data-planet="saturn"
+          data-title="Saturno — Tu paciencia"
+          data-message="Me comprendes con una paciencia que nunca me exige ser más sencilla de lo que soy. Me das tiempo, me escuchas y haces espacio incluso para las partes de mí que todavía no sé explicar."
+          data-x="2820"
+          data-y="830"
+          aria-label="Descubrir Saturno"
+        >
+          <span class="saturn-ring saturn-ring-back"></span>
+          <span class="planet-surface"></span>
+          <span class="saturn-ring saturn-ring-front"></span>
+          <span class="planet-label">Saturno</span>
+        </button>
+
+        <button
+          class="celestial planet uranus dormant"
+          type="button"
+          data-planet="uranus"
+          data-title="Urano — La calma dentro del caos"
+          data-message="No intentas eliminar todo lo difícil; simplemente consigues que deje de dar tanto miedo. Contigo, el caos no desaparece, pero encuentra una orilla tranquila desde la que puedo mirarlo."
+          data-x="620"
+          data-y="2050"
+          aria-label="Descubrir Urano"
+        >
+          <span class="planet-surface"></span>
+          <span class="uranus-ring"></span>
+          <span class="planet-label">Urano</span>
+        </button>
+
+        <button
+          class="celestial planet neptune dormant"
+          type="button"
+          data-planet="neptune"
+          data-title="Neptuno — La distancia que no logra separarnos"
+          data-message="Hay kilómetros entre nosotros, pero contigo la distancia deja de sentirse como una barrera. Tu cariño atraviesa la pantalla y se vuelve algo real, cercano y tangible; como si, de alguna manera, siempre supieras cómo llegar hasta mí."
+          data-x="3080"
+          data-y="2070"
+          aria-label="Descubrir Neptuno"
+        >
+          <span class="planet-surface"></span>
+          <span class="neptune-storm"></span>
+          <span class="planet-label">Neptuno</span>
+        </button>
+
+        <button
+          id="secretObject"
+          class="celestial secret-object hidden-object"
+          type="button"
+          data-x="1800"
+          data-y="2350"
+          aria-label="Abrir el último descubrimiento"
+        >
+          <span class="secret-core"></span>
+          <span class="secret-orbit"></span>
+          <span class="planet-label">Última luz</span>
+        </button>
+      </div>
+
+      <div id="narrative" class="narrative" aria-live="polite">
+        <p id="narrativeText"></p>
+      </div>
+
+      <aside id="discoveryPanel" class="discovery-panel" aria-hidden="true">
+        <button id="closePanel" class="icon-button close-button" type="button" aria-label="Cerrar mensaje">
+          <span></span>
+          <span></span>
+        </button>
+        <p id="panelEyebrow" class="panel-eyebrow">Descubrimiento</p>
+        <h2 id="panelTitle"></h2>
+        <p id="panelMessage"></p>
+      </aside>
+
+      <section id="letterScene" class="letter-scene" aria-hidden="true">
+        <div class="letter-backdrop"></div>
+        <article class="letter" aria-label="Carta final para Axel">
+          <button id="closeLetter" class="letter-close" type="button">Volver al universo</button>
+          <p class="letter-kicker">Para Axel</p>
+          <h2>Todo lo que no siempre sé decir</h2>
+
+          <p>Si llegaste hasta aquí, recorriste un universo que construí intentando poner en algún lugar todo lo que provocas en mí. Cada planeta, cada luz y cada palabra existe porque hablar de ti de una sola vez nunca me pareció suficiente.</p>
+
+          <p>A mí me cuesta expresarme. Muchas veces siento demasiado y digo demasiado poco. Las palabras se me quedan atrapadas porque me da miedo que mi intensidad pese, que mostrarte todo lo que llevo dentro sea una forma involuntaria de pedirte más de lo que puedes dar. Por eso suelo refugiarme en el silencio, aunque por dentro tenga tantas cosas que quisiera hacerte entender.</p>
+
+          <p>Pero esta vez no quiero esconderme.</p>
+
+          <p>Llegaste a mi vida sin hacer demasiado ruido y, aun así, cambiaste la forma en que se siente todo. No sé en qué momento dejaste de ser alguien con quien simplemente hablaba y comenzaste a convertirte en la persona que busco incluso cuando no estoy buscando a nadie. Ahora basta con escuchar tu voz durante un segundo para que algo dentro de mí se mueva. Puedes decir cualquier cosa, incluso la más insignificante, y conseguir que sonría cuando yo misma no sabía que lo necesitaba.</p>
+
+          <p>Eso todavía me sorprende.</p>
+
+          <p>Nuestra relación tiene kilómetros, pantallas y horarios de por medio. Sobre el papel debería sentirse lejana, incompleta, limitada por todo lo que todavía no podemos tocar. Pero tú haces que la distancia pierda autoridad. Has conseguido que tu cariño se sienta real, casi tangible; que tu presencia llegue hasta mí sin importar dónde estés. Hay momentos en los que cierro los ojos mientras hablas y el espacio entre nosotros simplemente deja de existir. Solo queda tu voz, la forma en que cuentas tus historias y esa sensación extraña de que estás mucho más cerca de lo que cualquier mapa podría explicar.</p>
+
+          <p>Contigo, conversar nunca se siente como un esfuerzo. No tengo que buscar desesperadamente qué decir ni fingir una versión más interesante de mí. Las palabras aparecen solas. Incluso los silencios tienen sentido. Para alguien como yo, que tantas veces se guarda, se contiene y se aleja antes de sentirse demasiado expuesta, encontrar una conexión así no es algo pequeño. Contigo no tengo que forzarme a encajar; de alguna manera, simplemente encajo.</p>
+
+          <p>Pero no te amo únicamente por cómo me haces sentir.</p>
+
+          <p>Te admiro por la persona que eres cuando nadie está mirando.</p>
+
+          <p>Admiro tu fortaleza, aunque sospecho que tú no siempre eres consciente de ella. Sé que has tenido que cargar cosas que no deberían haber recaído sobre ti. Sé que hay heridas que aprendiste a esconder, días en los que probablemente te sentiste cansado de sostenerte y momentos en los que la soledad pareció más segura que confiar otra vez. Y, aun así, sigues aquí.</p>
+
+          <p>Quizá tú solo veas las veces en que te quebraste, las decisiones que no salieron bien o las partes de tu vida que todavía parecen un desastre. Yo veo todas las veces que, incluso roto, encontraste la manera de levantarte. Veo a alguien que ha seguido avanzando sin que el mundo haya sido especialmente cuidadoso con él. Veo fuerza, pero no esa fuerza vacía que consiste en fingir que nada duele. Veo la fuerza más difícil: la de continuar incluso cuando sí duele.</p>
+
+          <p>No quiero idealizarte. No necesito hacerlo.</p>
+
+          <p>No quiero una versión perfecta de ti, ni una que esconda el caos para parecer más fácil de querer. No necesito que estés bien todo el tiempo, que tengas todas las respuestas o que conviertas cada herida en una lección. No estoy aquí porque crea que puedo salvarte, corregirte o reorganizar las partes que tú consideras desordenadas. Estoy aquí porque te veo. Y cuanto más te conozco, más razones encuentro para quedarme mirando.</p>
+
+          <p>Veo tu paciencia conmigo. La forma en que me cuidas. Tu atención a cosas que quizá para otros pasarían inadvertidas. La manera en que consigues atravesar mi frialdad sin exigirme que deje de ser quien soy. No intentas arrancarme las palabras; esperas hasta que puedo pronunciarlas. No haces que sentirme vulnerable parezca una deuda. Y no sabes cuánto significa para mí que alguien pueda acercarse a mis partes más cerradas sin tratar de romperlas para entrar.</p>
+
+          <p>Tú eres mi lugar seguro.</p>
+
+          <p>Me cuesta escribirlo porque suena sencillo, pero para mí no lo es. Yo no encuentro refugio fácilmente en las personas. Estoy acostumbrada a protegerme, a mantener una parte de mí lejos del alcance de cualquiera, a pensar que depender emocionalmente de alguien es dejar abierta una puerta por la que eventualmente puede entrar el dolor. Sin embargo, contigo entendí que sentirse segura no significa dejar de tener miedo. Significa saber que, incluso con miedo, hay alguien ante quien no necesito fingir.</p>
+
+          <p>Tú eres esa persona.</p>
+
+          <p>Eres todo lo que siempre quise sin haber sabido describirlo antes de conocerte. Eres atento, lindo y paciente, sí, pero eres mucho más que una lista de cualidades. Eres la forma en que mi cuerpo reconoce tu voz antes de que mi mente entienda lo que estás diciendo. Eres la calma que aparece cuando tengo demasiadas cosas dentro. Eres la sonrisa que se me escapa sin permiso. Eres esa presencia que consigue sentirse cercana incluso desde otro país. Eres la persona con la que puedo hablar durante horas y todavía sentir que queda algo más por descubrir.</p>
+
+          <p>Y eres, también, mi punto débil.</p>
+
+          <p>No lo digo como algo triste. Durante mucho tiempo creí que ser fuerte significaba no permitirle a nadie tener acceso a mis partes más blandas. Entonces llegaste tú y me hiciste entender que quizá la verdadera valentía está en dejar que alguien vea lo que normalmente escondes y esperar que no lo use para lastimarte.</p>
+
+          <p>Tú tienes acceso a una versión de mí que casi nadie conoce.</p>
+
+          <p>Eso me asusta. No voy a mentirte.</p>
+
+          <p>Me asusta cuánto me importas. Me asusta pensar que una persona que está tan lejos pueda ocupar un espacio tan grande dentro de mí. Me asusta imaginar que algo pueda cambiar, que el tiempo nos transforme o que un día la vida encuentre una forma de poner entre nosotros una distancia que ya no sepamos vencer. A veces intento contener lo que siento porque pienso que, si lo mantengo bajo control, también podré controlar cuánto podría dolerme perderlo.</p>
+
+          <p>Pero quererte con prudencia no me sale.</p>
+
+          <p>Puedo moderar mis palabras, puedo fingir que algunas cosas no me afectan, puedo intentar parecer más fría de lo que soy. Lo que no puedo hacer es negar la verdad: llegaste a un lugar de mí al que nadie había llegado de esta manera.</p>
+
+          <p>No sé qué hiciste exactamente. Tal vez fueron tus llamadas, tu paciencia, la manera en que logras hacerme reír o esa facilidad con la que nuestras conversaciones encontraron su propio ritmo. Tal vez fue la suma de cada detalle pequeño, de todos esos momentos que desde afuera parecerían insignificantes, pero que dentro de mí fueron construyendo algo inmenso.</p>
+
+          <p>Solo sé que llegaste.</p>
+
+          <p>Y desde entonces mi vida ya no se siente exactamente igual.</p>
+
+          <p>No quiero prometerte un futuro perfecto. No quiero llenar esta carta de eternidades dichas a la ligera, porque ambos sabemos que la vida cambia y que amar a alguien no elimina las dificultades. Lo que sí puedo decirte, con toda la honestidad que tengo, es que quiero conocerte en cada una de tus etapas. Quiero estar presente en tus días tranquilos y también en aquellos en los que vuelvas a sentirte perdido. Quiero verte alcanzar todo lo que deseas, pero también quiero que sepas que tu valor no depende de cuánto logres, de cuán fuerte parezcas ni de lo bien que consigas esconder tus heridas.</p>
+
+          <p>No tienes que demostrarme que mereces ser querido.</p>
+
+          <p>No tienes que ser invencible para que te admire.</p>
+
+          <p>No tienes que convertirte en alguien distinto para que yo elija quedarme.</p>
+
+          <p>Y cuando tus propios pensamientos intenten convencerte de que eres demasiado complicado, demasiado herido o demasiado difícil de comprender, quiero que recuerdes esto: hubo alguien que miró tus tormentas y no las confundió con una señal para escapar. Alguien que vio el caos, las cicatrices, los silencios y las partes de ti que quizá tú mismo rechazas, y no sintió menos cariño. Sintió más ganas de conocerte.</p>
+
+          <p>Esa persona soy yo.</p>
+
+          <p>Hice este universo porque no sabía cómo entregarte algo que estuviera a la altura de lo que significas para mí. Entonces pensé que quizá podía construir un lugar al que regresaras cuando tus días se volvieran demasiado pesados. Un espacio donde cada luz te recordara algo que yo veo en ti, incluso cuando tú no puedes verlo.</p>
+
+          <p>Pero la verdad es que este universo no está hecho de estrellas.</p>
+
+          <p>Está hecho de todas las veces que pensé en ti.</p>
+
+          <p>De las palabras que me guardé.</p>
+
+          <p>De las noches en las que escuchar tu voz hizo desaparecer la distancia.</p>
+
+          <p>De cada vez que conseguiste hacerme sonreír sin siquiera intentarlo.</p>
+
+          <p>De todo lo que admiro de ti.</p>
+
+          <p>De todo lo que me da miedo perder.</p>
+
+          <p>Y de todo lo que, a pesar del miedo, decidí sentir.</p>
+
+          <p>Si alguna vez dudas de lo importante que eres, vuelve aquí.</p>
+
+          <p>Si alguna vez crees que nadie podría comprenderte, vuelve aquí.</p>
+
+          <p>Si alguna vez el mundo te hace sentir que tienes que esconder tus partes más vulnerables para que alguien decida quedarse, vuelve aquí.</p>
+
+          <p>No porque una página pueda resolver tus problemas ni porque mis palabras sean suficientes para curar todo lo que te ha dolido. Vuelve para recordar que, en algún lugar de este mundo, hay una persona que te mira con una ternura que a veces ni ella misma sabe explicar. Una persona que admira tu fuerza, pero que también quiere proteger el derecho que tienes a cansarte. Una persona que no te quiere por lo que podrías llegar a ser, sino por quien eres ahora, con todo lo que llevas dentro.</p>
+
+          <p>Axel, eres mi lugar seguro, mi debilidad más honesta y lo mejor que me ha pasado.</p>
+
+          <p>No sé si alguna vez podré expresar por completo lo que eres para mí. Quizá siempre me falten palabras. Quizá por eso necesité un universo entero.</p>
+
+          <p>Pero si tuviera que reducir todo esto a una sola verdad, sería esta:</p>
+
+          <p class="letter-emphasis">Desde que llegaste a mi vida, ya no siento que estoy atravesándola completamente sola.</p>
+
+          <p>Y no tienes idea de cuánto significa eso para mí.</p>
+
+          <p>Gracias por tu paciencia.</p>
+          <p>Gracias por cuidarme desde tan lejos.</p>
+          <p>Gracias por hacer que la distancia se sienta pequeña.</p>
+          <p>Gracias por seguir siendo fuerte incluso cuando la vida te ha dado razones para rendirte.</p>
+          <p>Gracias por confiarme tus historias, tus silencios y las partes de ti que no siempre muestras.</p>
+          <p>Gracias por dejarme conocerte.</p>
+          <p>Y, sobre todo, gracias por existir.</p>
+
+          <p class="letter-ending"><strong>Te amo, Axel. No de una forma perfecta ni libre de miedo, sino de la forma más honesta que conozco: viéndote completo y eligiéndote así.</strong></p>
+
+          <footer class="letter-signature">
+            <span>Con todo mi amor,</span>
+            <strong>Abby</strong>
+          </footer>
+        </article>
+      </section>
+
+      <section id="epilogueScene" class="epilogue-scene" aria-hidden="true">
+        <div class="epilogue-backdrop"></div>
+        <article class="epilogue-card" aria-label="Epílogo secreto">
+          <p class="letter-kicker">La luz número ochenta</p>
+          <p>Encontraste cada pensamiento que dejé escondido en este lugar. Quizá ahora entiendas que este universo nunca estuvo lleno de estrellas, sino de todas las veces que pensé en ti.</p>
+          <p class="epilogue-final">Y aun así, ochenta luces no fueron suficientes.</p>
+          <button id="closeEpilogue" class="letter-close epilogue-close" type="button">Volver al universo</button>
+        </article>
+      </section>
+
+      <div id="controls" class="controls" aria-label="Controles de exploración">
+        <button id="resetView" class="control-button" type="button">Recentrar</button>
+        <button id="toggleAudio" class="control-button" type="button" aria-pressed="true">Sonido: activo</button>
+        <button id="findLight" class="control-button" type="button">Buscar una luz</button>
+        <div id="finalMenu" class="final-menu" hidden>
+          <button id="finalMenuToggle" class="control-button final-menu-toggle" type="button" aria-expanded="false">Final</button>
+          <div id="finalMenuPopover" class="options-popover" hidden>
+            <button id="openLetterAgain" class="options-action" type="button">Volver a leer la carta</button>
+            <button id="openEpilogue" class="options-action" type="button" hidden>Leer epílogo</button>
+            <button id="resetProgress" class="options-action options-action-danger" type="button">Reiniciar recorrido</button>
+          </div>
+        </div>
+        <div class="progress progress-planets" aria-label="Planetas descubiertos">
+          <span class="progress-label">Planetas</span><span id="progressCount">0</span><span>/8</span>
+        </div>
+        <div class="progress progress-stars" aria-label="Luces descubiertas">
+          <span class="progress-label">Luces</span><span id="starProgressCount">0</span><span>/80</span>
+        </div>
+      </div>
+
+      <div id="navigationHint" class="navigation-hint">
+        <strong>Este universo guarda más que planetas.</strong>
+        <span>Arrastra para explorar, acércate a las luces tenues y tócalas para descubrir pensamientos.</span>
+      </div>
+    </section>
+  </main>
+
+  <noscript>
+    Esta experiencia necesita JavaScript para funcionar.
+  </noscript>
+
+  <script src="script.js"></script>
+</body>
+</html>
