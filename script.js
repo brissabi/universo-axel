@@ -337,9 +337,9 @@ function createInteractiveStars() {
     star.style.setProperty("--size", `${(random() * 3.4 + 2.1).toFixed(2)}px`);
     star.style.setProperty("--dormant-opacity", (random() * 0.1 + 0.055).toFixed(2));
     star.setAttribute("aria-label", `Descubrir la luz ${i + 1}`);
-    star.addEventListener("pointerdown", event => event.stopPropagation());
     star.addEventListener("click", event => {
       event.stopPropagation();
+      if (state.movedDuringPointer) return;
       discoverStar(star);
     });
     interactiveStars.appendChild(star);
@@ -1042,9 +1042,14 @@ closePanel.addEventListener("click", closePlanetMoment);
 planetMomentBackdrop.addEventListener("click", closePlanetMoment);
 moonObject.addEventListener("click", event => {
   event.stopPropagation();
+  if (state.movedDuringPointer) return;
   openMoonMessage();
 });
-secretObject.addEventListener("click", openLetter);
+secretObject.addEventListener("click", event => {
+  event.stopPropagation();
+  if (state.movedDuringPointer) return;
+  openLetter();
+});
 closeLetter.addEventListener("click", closeLetterScene);
 letterBackdrop.addEventListener("click", closeLetterScene);
 closeEpilogue.addEventListener("click", closeEpilogueScene);
@@ -1077,6 +1082,9 @@ viewport.addEventListener("touchstart", touchStart, { passive: true });
 viewport.addEventListener("touchmove", touchMove, { passive: false });
 viewport.addEventListener("touchend", touchEnd, { passive: true });
 
+// Evita el arrastre nativo del navegador (icono rojo de prohibido) sobre planetas, textos e imágenes.
+document.addEventListener("dragstart", event => event.preventDefault());
+
 document.addEventListener("click", event => {
   if (menuPanel.classList.contains("is-open") && !event.target.closest(".menu-panel,.menu-toggle")) closeMenu();
 });
@@ -1093,9 +1101,9 @@ document.addEventListener("keydown", event => {
 document.querySelectorAll(".celestial:not(#secretObject)").forEach(object => {
   object.style.left = `${object.dataset.x}px`;
   object.style.top = `${object.dataset.y}px`;
-  object.addEventListener("pointerdown", event => event.stopPropagation());
   object.addEventListener("click", event => {
     event.stopPropagation();
+    if (state.movedDuringPointer) return;
     discoverCelestial(object);
   });
 });
