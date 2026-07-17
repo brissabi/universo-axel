@@ -195,3 +195,136 @@ body.moment-open .world,body.letter-open .world,body.epilogue-open .world{animat
 }
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.shooting-star,.cosmic-mote,.drifting-body{display:none}}
+
+/* =========================================================
+   AJUSTE VISUAL FINAL
+   - Recupera el contraste azul/morado del cielo
+   - Rediseña únicamente el selector de Calidad visual
+   - Mantiene intactas las luces, planetas y funcionamiento
+   ========================================================= */
+
+/* Cielo con contraste azul y morado, sin volverlo demasiado brillante */
+#experience {
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(34, 92, 255, .24) 0%, transparent 43%),
+    radial-gradient(ellipse at 82% 22%, rgba(139, 71, 255, .20) 0%, transparent 41%),
+    radial-gradient(ellipse at 58% 82%, rgba(72, 40, 190, .18) 0%, transparent 46%),
+    #03040a;
+}
+
+.viewport {
+  background:
+    radial-gradient(ellipse at 20% 34%, rgba(20, 86, 255, .32) 0%, rgba(18, 57, 170, .13) 31%, transparent 58%),
+    radial-gradient(ellipse at 82% 30%, rgba(133, 54, 219, .27) 0%, rgba(87, 39, 151, .12) 33%, transparent 60%),
+    radial-gradient(ellipse at 56% 76%, rgba(64, 46, 184, .20) 0%, transparent 50%),
+    radial-gradient(circle at 50% 42%, #11172e 0%, #080b17 40%, #03040a 76%, #010207 100%);
+}
+
+/* Nebulosas visibles pero suaves */
+.nebula { opacity: .16; filter: blur(92px); }
+.nebula-a { background: #2468ff; opacity: .19; }
+.nebula-b { background: #8d43e8; opacity: .18; }
+.nebula-c { background: #4f46d9; opacity: .14; }
+
+/* Evita que el tema de la canción apague demasiado el morado */
+body[data-sound-theme] .nebula-a { opacity: .17; }
+body[data-sound-theme] .nebula-b { opacity: .16; }
+
+/* ---------- Selector de calidad visual ---------- */
+.quality-control {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.quality-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.quality-heading p {
+  margin: 0;
+  color: rgba(245,242,234,.88);
+  font-size: .92rem;
+  font-weight: 500;
+}
+
+.quality-heading span {
+  color: rgba(181,151,255,.82);
+  font-size: .62rem;
+  letter-spacing: .05em;
+  text-align: right;
+}
+
+.quality-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.quality-options button {
+  position: relative;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 13px;
+  background: rgba(255,255,255,.025);
+  color: rgba(245,242,234,.64);
+  font-size: .72rem;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    color .25s ease,
+    border-color .25s ease,
+    background .25s ease,
+    box-shadow .25s ease,
+    transform .25s ease;
+}
+
+.quality-options button:hover {
+  color: rgba(255,255,255,.92);
+  border-color: rgba(158,117,255,.30);
+  background: rgba(130,83,226,.07);
+  transform: translateY(-1px);
+}
+
+.quality-options button[aria-pressed="true"] {
+  color: #f7f2ff;
+  border-color: rgba(157,108,255,.58);
+  background:
+    linear-gradient(145deg, rgba(132,77,235,.20), rgba(66,43,150,.12));
+  box-shadow:
+    inset 0 0 0 1px rgba(190,158,255,.06),
+    0 0 18px rgba(120,72,220,.13);
+}
+
+.quality-options button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #b58cff;
+  box-shadow: 0 0 7px rgba(181,140,255,.85);
+}
+
+.quality-options button:focus-visible {
+  outline: none;
+  border-color: rgba(194,164,255,.75);
+  box-shadow: 0 0 0 3px rgba(145,96,235,.15);
+}
+
+@media (max-width: 700px) {
+  .quality-control { margin-top: 16px; padding-top: 16px; }
+  .quality-options { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .quality-options button { padding: 11px 8px; border-radius: 12px; font-size: .69rem; }
+  .quality-heading span { max-width: 48%; }
+}
