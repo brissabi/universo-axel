@@ -14,6 +14,8 @@ const shootingStarsLayer = document.getElementById("shootingStars");
 const driftingBodies = document.getElementById("driftingBodies");
 const lightMessage = document.getElementById("lightMessage");
 const lightMessageText = document.getElementById("lightMessageText");
+const lightMessageLabel = lightMessage?.querySelector(".light-message-label");
+const lightMessageClose = lightMessage?.querySelector(".light-message-close");
 const planetMoment = document.getElementById("planetMoment");
 const planetMomentBackdrop = document.getElementById("planetMomentBackdrop");
 const panelEyebrow = document.getElementById("panelEyebrow");
@@ -298,7 +300,23 @@ function toggleSound(){initAudioContext();if(soundtrack.paused){state.audioEnabl
 
 soundtrack.addEventListener("ended",nextTrack);soundtrack.addEventListener("error",()=>{if(state.started&&availableTracks.length>1)setTimeout(nextTrack,300)});
 
-function openLightMessage(message){clearTimeout(lightMessageTimer);lightMessageText.textContent=message;lightMessage.classList.add("is-open");duckAudio();lightMessageTimer=setTimeout(closeLightMessage,7000)}
+function openLightMessage(message, options = {}){
+  const {
+    type = "light",
+    label = "Una luz",
+    closeText = "Toca para continuar",
+    duration = 7000
+  } = options;
+
+  clearTimeout(lightMessageTimer);
+  lightMessage.classList.toggle("moon-message", type === "moon");
+  lightMessageText.textContent = message;
+  if(lightMessageLabel) lightMessageLabel.textContent = label;
+  if(lightMessageClose) lightMessageClose.textContent = closeText;
+  lightMessage.classList.add("is-open");
+  duckAudio();
+  lightMessageTimer = setTimeout(closeLightMessage, duration);
+}
 function closeLightMessage(){if(!lightMessage.classList.contains("is-open"))return;clearTimeout(lightMessageTimer);lightMessage.classList.remove("is-open");restoreAudio();if(state.pendingEpilogue){state.pendingEpilogue=false;setTimeout(openEpilogue,700)}}
 function discoverStar(star){const id=star.dataset.starId;if(!state.visitedStars.has(id)){state.visitedStars.add(id);star.classList.remove("dormant","awakened");star.classList.add("discovered");starProgressCount.textContent=state.visitedStars.size;playStarSfx();if(state.visitedStars.size===80){state.epilogueUnlocked=true;state.pendingEpilogue=true;openEpilogueButton.hidden=false;playUnlockSfx()}saveProgress()}openLightMessage(star.dataset.message)}
 
@@ -306,9 +324,15 @@ function openPlanetMoment(object){panelEyebrow.textContent=object.dataset.kind==
 function closePlanetMoment(){if(!planetMoment.classList.contains("is-open"))return;planetMoment.classList.remove("is-open");planetMoment.setAttribute("aria-hidden","true");document.body.classList.remove("moment-open");restoreAudio();if(state.pendingPlanetCompletion){state.pendingPlanetCompletion=false;setTimeout(unlockSecretObject,800)}}
 function discoverCelestial(object){if(state.movedDuringPointer)return;const x=Number(object.dataset.x),y=Number(object.dataset.y);centerOnWorldPoint(x,y,window.innerWidth<700?.78:.92,true);const name=object.dataset.planet;if(name&&!state.visitedPlanets.has(name)){state.visitedPlanets.add(name);object.classList.remove("dormant","awakened");object.classList.add("discovered");progressCount.textContent=state.visitedPlanets.size;playPlanetSfx();if(state.visitedPlanets.size===8)state.pendingPlanetCompletion=true;saveProgress()}setTimeout(()=>openPlanetMoment(object),760)}
 function openMoonMoment(){
-  openLightMessage("Dicen que la Luna siempre acompaña a quienes miran el mismo cielo, sin importar la distancia.
-
-Me gusta pensar que, mientras exista, siempre habrá una parte del universo que compartiremos tú y yo. Pero nuestro viaje aún no termina... Todavía quedan pequeñas luces esperando ser encontradas. Cuando la última despierte, el universo tendrá algo más para ti.");
+  openLightMessage(
+    "La Luna me gusta porque, aun desde lejos, puede acompañarnos a los dos.\n\nMe gusta imaginar que, cuando la mires, yo también podré estar mirando la misma luz contigo.\n\nEste universo todavía guarda luces escondidas. Encuéntralas todas: cada una conserva una pequeña parte de lo que siento por ti.",
+    {
+      type: "moon",
+      label: "Para ti, bajo la Luna",
+      closeText: "Volver al universo",
+      duration: 16000
+    }
+  );
 }
 
 function revealMoon(center=true){

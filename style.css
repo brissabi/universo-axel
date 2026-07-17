@@ -409,3 +409,133 @@ body[data-sound-theme] .nebula-b { opacity: .16; }
 @keyframes moonOrbitSpin{to{transform:rotate(360deg)}}
 @keyframes moonCounterSpin{to{transform:rotate(-360deg)}}
 @media (max-width:700px){.moon-orbit{width:170px;height:170px}.moon-object{top:2px;width:30px;height:30px;margin-left:-15px}.moon-path{inset:15px}}
+
+
+/* ===== MENSAJE ESPECIAL DE LA LUNA: TARJETA TIPO CARTA ===== */
+.light-message.moon-message{
+  padding:24px;
+  gap:0;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(111,86,182,.16),transparent 42%),
+    rgba(2,4,12,.58);
+  backdrop-filter:blur(7px) saturate(1.08);
+}
+
+.light-message.moon-message::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:50%;
+  top:50%;
+  width:min(650px,calc(100vw - 38px));
+  height:min(470px,calc(100vh - 70px));
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(214,207,255,.18);
+  border-radius:30px;
+  background:
+    linear-gradient(145deg,rgba(27,25,55,.93),rgba(8,11,28,.94)),
+    radial-gradient(circle at 15% 0%,rgba(151,117,235,.22),transparent 42%);
+  box-shadow:
+    0 34px 100px rgba(0,0,0,.72),
+    0 0 70px rgba(104,76,178,.12),
+    inset 0 1px rgba(255,255,255,.08);
+  filter:none;
+}
+
+.light-message.moon-message::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:calc(50% - 235px);
+  width:78px;
+  height:1px;
+  transform:translate(-50%,30px);
+  background:linear-gradient(90deg,transparent,rgba(220,211,255,.55),transparent);
+  box-shadow:0 0 16px rgba(184,163,255,.28);
+}
+
+.light-message.moon-message > span{
+  position:relative;
+  z-index:2;
+}
+
+.light-message.moon-message .light-message-label{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:0 0 24px;
+  color:rgba(225,216,255,.78);
+  font-size:.61rem;
+  letter-spacing:.29em;
+}
+
+.light-message.moon-message .light-message-label::before{
+  content:"";
+  display:block;
+  width:48px;
+  height:48px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 28%,rgba(255,255,255,.95),transparent 17%),
+    radial-gradient(circle at 62% 68%,rgba(69,74,96,.35) 0 12%,transparent 13%),
+    radial-gradient(circle at 38% 34%,#f0f2f7 0,#bac0cb 47%,#697080 76%,#292e3b 100%);
+  box-shadow:
+    0 0 13px rgba(255,255,255,.35),
+    0 0 42px rgba(137,153,229,.32);
+}
+
+.light-message.moon-message .light-message-text{
+  width:min(510px,calc(100vw - 82px));
+  max-width:510px;
+  color:rgba(248,245,255,.91);
+  font-size:clamp(1.08rem,2.15vw,1.42rem);
+  font-weight:400;
+  line-height:1.68;
+  letter-spacing:.008em;
+  text-align:center;
+  white-space:pre-line;
+  text-shadow:0 3px 16px rgba(0,0,0,.62);
+}
+
+.light-message.moon-message .light-message-close{
+  margin-top:28px;
+  padding-top:15px;
+  border-top:1px solid rgba(218,207,255,.12);
+  color:rgba(226,219,255,.48);
+  font-size:.58rem;
+  letter-spacing:.22em;
+}
+
+@media (max-width:700px){
+  .light-message.moon-message{padding:14px 18px 28px}
+  .light-message.moon-message::before{
+    width:calc(100vw - 28px);
+    height:min(540px,calc(100vh - 54px));
+    border-radius:25px;
+  }
+  .light-message.moon-message::after{
+    top:calc(50% - min(270px,calc((100vh - 54px)/2)));
+    transform:translate(-50%,25px);
+  }
+  .light-message.moon-message .light-message-label{
+    margin-bottom:20px;
+    font-size:.56rem;
+    letter-spacing:.24em;
+  }
+  .light-message.moon-message .light-message-label::before{
+    width:42px;
+    height:42px;
+    margin-bottom:17px;
+  }
+  .light-message.moon-message .light-message-text{
+    width:calc(100vw - 64px);
+    font-size:clamp(1rem,4.9vw,1.2rem);
+    line-height:1.58;
+  }
+  .light-message.moon-message .light-message-close{
+    margin-top:23px;
+  }
+}
