@@ -624,3 +624,55 @@ body[data-quality="saver"] .celestial.discovered::after { animation: none; }
 .moon-path { transform: none; }
 .moon-object .planet-label { display: none; }
 .secret-object.is-immediate { transition: none; }
+
+/* =========================================================
+   AJUSTE FINAL: LUCES PEQUEÑAS SIN CÍRCULO/HALO FUERTE
+   Mantiene el punto central y todas sus interacciones.
+   ========================================================= */
+
+.interactive-star::before {
+  background: #edf2ff;
+  filter: none;
+  box-shadow: none;
+}
+
+.interactive-star.dormant::before {
+  opacity: var(--dormant-opacity, .12);
+  transform: translate(-50%, -50%) scale(1);
+  filter: none;
+  box-shadow: 0 0 1px rgba(220, 232, 255, .16);
+}
+
+.interactive-star.awakened::before {
+  opacity: .92;
+  transform: translate(-50%, -50%) scale(1.05);
+  filter: none;
+  box-shadow:
+    0 0 2px rgba(255, 255, 255, .30),
+    0 0 4px rgba(160, 202, 255, .08);
+  animation: starBreath 3.5s ease-in-out infinite;
+}
+
+.interactive-star.discovered::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.08);
+  background: #fff9e8;
+  filter: none;
+  box-shadow:
+    0 0 2px rgba(255, 255, 255, .40),
+    0 0 4px rgba(255, 236, 190, .10);
+}
+
+/* La luz guiada continúa siendo identificable, pero sin un círculo grande. */
+@keyframes guidedLight {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 0 2px rgba(255, 255, 255, .38);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.28);
+    box-shadow:
+      0 0 3px rgba(255, 255, 255, .52),
+      0 0 6px rgba(215, 195, 155, .10);
+  }
+}
