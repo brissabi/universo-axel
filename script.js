@@ -306,7 +306,9 @@ function openPlanetMoment(object){panelEyebrow.textContent=object.dataset.kind==
 function closePlanetMoment(){if(!planetMoment.classList.contains("is-open"))return;planetMoment.classList.remove("is-open");planetMoment.setAttribute("aria-hidden","true");document.body.classList.remove("moment-open");restoreAudio();if(state.pendingPlanetCompletion){state.pendingPlanetCompletion=false;setTimeout(unlockSecretObject,800)}}
 function discoverCelestial(object){if(state.movedDuringPointer)return;const x=Number(object.dataset.x),y=Number(object.dataset.y);centerOnWorldPoint(x,y,window.innerWidth<700?.78:.92,true);const name=object.dataset.planet;if(name&&!state.visitedPlanets.has(name)){state.visitedPlanets.add(name);object.classList.remove("dormant","awakened");object.classList.add("discovered");progressCount.textContent=state.visitedPlanets.size;playPlanetSfx();if(state.visitedPlanets.size===8)state.pendingPlanetCompletion=true;saveProgress()}setTimeout(()=>openPlanetMoment(object),760)}
 function openMoonMoment(){
-  openLightMessage("Has recorrido todos los mundos de este universo... Pero aún quedan pequeñas luces esperando ser encontradas. Cuando todas despierten, algo que permanecía oculto podrá encontrarte.");
+  openLightMessage("Dicen que la Luna siempre acompaña a quienes miran el mismo cielo, sin importar la distancia.
+
+Me gusta pensar que, mientras exista, siempre habrá una parte del universo que compartiremos tú y yo. Pero nuestro viaje aún no termina... Todavía quedan pequeñas luces esperando ser encontradas. Cuando la última despierte, el universo tendrá algo más para ti.");
 }
 
 function revealMoon(center=true){
