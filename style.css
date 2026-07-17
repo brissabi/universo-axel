@@ -15,7 +15,7 @@
 }
 
 * { box-sizing: border-box; }
-html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; background: var(--space-0); }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--space-0); }
 body { font-family: "Inter", system-ui, sans-serif; color: var(--ink); -webkit-tap-highlight-color: transparent; }
 #experience, #experience * { user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
 .planet-sheet, .letter, .epilogue-card, .menu-panel { user-select: text; -webkit-user-select: text; }
@@ -23,48 +23,6 @@ button { font: inherit; }
 button:focus-visible { outline: 1px solid rgba(234,217,179,.72); outline-offset: 4px; }
 
 #experience { position: relative; width: 100%; height: 100%; overflow: hidden; background: #03040a; }
-
-
-/* Fixed aurora layers create depth without adding heavy DOM particles. */
-.viewport::before,
-.viewport::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 50%;
-  mix-blend-mode: screen;
-  will-change: transform, opacity;
-}
-.viewport::before {
-  width: 72vw;
-  height: 44vw;
-  left: -20vw;
-  top: -14vw;
-  background: radial-gradient(ellipse at 58% 58%, rgba(54, 192, 255, .22), rgba(55, 96, 255, .13) 35%, rgba(142, 58, 213, .07) 58%, transparent 74%);
-  filter: blur(48px);
-  animation: auroraParallaxA 38s ease-in-out infinite alternate;
-}
-.viewport::after {
-  width: 68vw;
-  height: 48vw;
-  right: -18vw;
-  bottom: -18vw;
-  background: radial-gradient(ellipse at 40% 42%, rgba(255, 92, 196, .17), rgba(142, 68, 218, .14) 38%, rgba(34, 131, 255, .08) 62%, transparent 77%);
-  filter: blur(54px);
-  animation: auroraParallaxB 45s ease-in-out infinite alternate;
-}
-@keyframes auroraParallaxA { from { transform: translate3d(-2vw,-1vh,0) rotate(-4deg) scale(.96); opacity:.72 } to { transform: translate3d(9vw,7vh,0) rotate(7deg) scale(1.1); opacity:1 } }
-@keyframes auroraParallaxB { from { transform: translate3d(2vw,4vh,0) rotate(5deg) scale(1.02); opacity:.7 } to { transform: translate3d(-8vw,-6vh,0) rotate(-7deg) scale(1.12); opacity:.96 } }
-
-.celestial.camera-focus { animation: cameraFocusPulse .9s ease-out; }
-@keyframes cameraFocusPulse {
-  0%,100% { filter: brightness(1); }
-  45% { filter: brightness(1.35) drop-shadow(0 0 22px rgba(171,142,255,.75)); }
-}
-
-body[data-quality="saver"] .viewport::before,
-body[data-quality="saver"] .viewport::after { animation: none; opacity: .38; filter: blur(70px); }
 
 /* Intro */
 .intro { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 50% 47%, #10162b 0, #070914 32%, #020309 72%); transition: opacity 1.8s ease, visibility 1.8s ease; }
@@ -624,55 +582,3 @@ body[data-quality="saver"] .celestial.discovered::after { animation: none; }
 .moon-path { transform: none; }
 .moon-object .planet-label { display: none; }
 .secret-object.is-immediate { transition: none; }
-
-/* =========================================================
-   AJUSTE FINAL: LUCES PEQUEÑAS SIN CÍRCULO/HALO FUERTE
-   Mantiene el punto central y todas sus interacciones.
-   ========================================================= */
-
-.interactive-star::before {
-  background: #edf2ff;
-  filter: none;
-  box-shadow: none;
-}
-
-.interactive-star.dormant::before {
-  opacity: var(--dormant-opacity, .12);
-  transform: translate(-50%, -50%) scale(1);
-  filter: none;
-  box-shadow: 0 0 1px rgba(220, 232, 255, .16);
-}
-
-.interactive-star.awakened::before {
-  opacity: .92;
-  transform: translate(-50%, -50%) scale(1.05);
-  filter: none;
-  box-shadow:
-    0 0 2px rgba(255, 255, 255, .30),
-    0 0 4px rgba(160, 202, 255, .08);
-  animation: starBreath 3.5s ease-in-out infinite;
-}
-
-.interactive-star.discovered::before {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.08);
-  background: #fff9e8;
-  filter: none;
-  box-shadow:
-    0 0 2px rgba(255, 255, 255, .40),
-    0 0 4px rgba(255, 236, 190, .10);
-}
-
-/* La luz guiada continúa siendo identificable, pero sin un círculo grande. */
-@keyframes guidedLight {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1.08);
-    box-shadow: 0 0 2px rgba(255, 255, 255, .38);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.28);
-    box-shadow:
-      0 0 3px rgba(255, 255, 255, .52),
-      0 0 6px rgba(215, 195, 155, .10);
-  }
-}
